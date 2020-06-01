@@ -8,6 +8,8 @@
 #include <GL/freeglut.h>
 #include <glm/glm.hpp>
 
+Emitter* vfx = nullptr;
+
 void window_resize(int width, int height) {
   glViewport(0,0,width,height);TEST_OPENGL_ERROR();
 }
@@ -20,6 +22,12 @@ void display() {
   glutSwapBuffers();
 }
 
+void timer(int) {
+    vfx->update_vbo();
+    glutPostRedisplay();
+    glutTimerFunc(1000/2, timer, 0);
+}
+
 void init_glut(int &argc, char *argv[]) {
   //glewExperimental = GL_TRUE;
   glutInit(&argc, argv);
@@ -30,6 +38,7 @@ void init_glut(int &argc, char *argv[]) {
   glutInitWindowPosition ( 100, 100 );
   glutCreateWindow("Shader Programming");
   glutDisplayFunc(display);
+  glutTimerFunc(1000/2, timer, 0);
   glutReshapeFunc(window_resize);
 }
 
@@ -77,5 +86,6 @@ int main(int argc, char* argv[])
     std::string fragment_src = load("shaders/fragment.shd");
     Emitter e(500, vertex_src, fragment_src);
     e.init_emitter_vxo();
+    vfx = &e;
     glutMainLoop();
 }

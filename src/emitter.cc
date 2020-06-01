@@ -19,4 +19,20 @@ void Emitter::init_emitter_vxo()
     glUseProgram(pid);
 }
 
-
+void Emitter::update_vbo()
+{
+    if (state)
+    {
+        float obj_vertices[9] = { -0.5f, 0.f, 0.f, 0.f, 0.5f, 0.f, 0.f,-0.5f, 0.f };
+        glBindBuffer(GL_ARRAY_BUFFER, 1); TEST_OPENGL_ERROR();
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(obj_vertices), obj_vertices);
+        state = false;
+    }
+    else
+    {
+        float obj_vertices[9] = { 0.5f, 0.f, 0.f, 0.f, 0.5f, 0.f, 0.f,-0.5f, 0.f };
+        glBindBuffer(GL_ARRAY_BUFFER, 1); TEST_OPENGL_ERROR();
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(obj_vertices), obj_vertices);
+        state = true;
+    }
+}

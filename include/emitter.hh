@@ -14,11 +14,14 @@ public:
         nparticles(npart)
     {
         pid = make_program(vertex, fragment);
+        state = true;
     }
 
     void init_emitter_vxo();
+    void update_vbo();
 
     GLuint nparticles;
     GLuint pid;
     GLuint vao_id;
+    bool state;
 };
