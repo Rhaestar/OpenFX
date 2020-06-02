@@ -1,16 +1,18 @@
 #include "emitter.hh"
 
+float random_range(float up)
+{
+    return (float)(rand()) / (float)(RAND_MAX/up);
+}
+
 void Emitter::init_emitter_vxo()
 {
-    float obj_vertices[9] = { 0.5f, 0.f, 0.f, 0.f, 0.5f, 0.f, 0.f,-0.5f, 0.f };
-
     glGenVertexArrays(1, &vao_id); TEST_OPENGL_ERROR();
     glBindVertexArray(vao_id); TEST_OPENGL_ERROR();
 
-    GLuint vbo_id; TEST_OPENGL_ERROR();
     glGenBuffers(1, &vbo_id); TEST_OPENGL_ERROR();
     glBindBuffer(GL_ARRAY_BUFFER, vbo_id); TEST_OPENGL_ERROR();
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), obj_vertices, GL_STATIC_DRAW);TEST_OPENGL_ERROR();
+    glBufferData(GL_ARRAY_BUFFER, nparticles *  sizeof(glm::vec3), pos_buffer, GL_STATIC_DRAW);TEST_OPENGL_ERROR();
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); TEST_OPENGL_ERROR();
     glEnableVertexAttribArray(0); TEST_OPENGL_ERROR();
 
@@ -19,20 +21,53 @@ void Emitter::init_emitter_vxo()
     glUseProgram(pid);
 }
 
-void Emitter::update_vbo()
+void Emitter::update_vbo(unsigned dt)
 {
-    if (state)
+    bool need_init = false;
+    if (nparticles > curr_nparticles)
     {
-        float obj_vertices[9] = { -0.5f, 0.f, 0.f, 0.f, 0.5f, 0.f, 0.f,-0.5f, 0.f };
-        glBindBuffer(GL_ARRAY_BUFFER, 1); TEST_OPENGL_ERROR();
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(obj_vertices), obj_vertices);
-        state = false;
+        if (dt > timer)
+        {
+            curr_nparticles += wave_size;
+            curr_nparticles = std::min(curr_nparticles, nparticles);
+            timer = dt - 1;
+            need_init = true;
+        }
+        else
+            timer -= dt;
     }
-    else
+    float deltatime = (float)(dt) / 1000.f;
+    float speed = 0.5f;
+
+    if (need_init)
     {
-        float obj_vertices[9] = { 0.5f, 0.f, 0.f, 0.f, 0.5f, 0.f, 0.f,-0.5f, 0.f };
-        glBindBuffer(GL_ARRAY_BUFFER, 1); TEST_OPENGL_ERROR();
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(obj_vertices), obj_vertices);
-        state = true;
+        for (GLuint i = curr_nparticles - wave_size; i < curr_nparticles; ++i)
+        {
+            pos_buffer[i].x = 0.25f - random_range(0.5f);
+            pos_buffer[i].y = random_range(0.1f);
+            pos_buffer[i].z = 0.25f - random_range(0.5f);
+            life_buffer[i] = 1000.f + 100.f - random_range(200.f);
+        }
     }
+
+    for (GLuint i = 0; i < curr_nparticles; ++i)
+    {
+        if (dt > life_buffer[i])
+        {
+            pos_buffer[i].x = 0.25f - random_range(0.5f);
+            pos_buffer[i].y = random_range(0.1f);
+            pos_buffer[i].z = 0.25f - random_range(0.5f);
+            life_buffer[i] = 1000.f + 500.f - random_range(1000.f);
+        }
+        else
+        {
+            pos_buffer[i].y += speed * deltatime;
+            life_buffer[i] -= dt;
+        }
+    }
+
+    glBindVertexArray(vao_id); TEST_OPENGL_ERROR();
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_id); TEST_OPENGL_ERROR();
+    glBufferSubData(GL_ARRAY_BUFFER, 0, curr_nparticles * sizeof(glm::vec3), pos_buffer);
+    glBindVertexArray(0); TEST_OPENGL_ERROR();
 }
