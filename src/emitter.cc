@@ -37,7 +37,6 @@ void Emitter::update_vbo(unsigned dt)
             timer -= dt;
     }
     float deltatime = (float)(dt) / 1000.f;
-    float speed = 0.5f;
 
     if (need_init)
     {
@@ -46,7 +45,8 @@ void Emitter::update_vbo(unsigned dt)
             pos_buffer[i].x = 0.25f - random_range(0.5f);
             pos_buffer[i].y = random_range(0.1f);
             pos_buffer[i].z = 0.25f - random_range(0.5f);
-            life_buffer[i] = 1000.f + 100.f - random_range(200.f);
+            life_buffer[i] = 1000.f + 500.f - random_range(1000.f);
+            speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
         }
     }
 
@@ -58,10 +58,11 @@ void Emitter::update_vbo(unsigned dt)
             pos_buffer[i].y = random_range(0.1f);
             pos_buffer[i].z = 0.25f - random_range(0.5f);
             life_buffer[i] = 1000.f + 500.f - random_range(1000.f);
+            speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
         }
         else
         {
-            pos_buffer[i].y += speed * deltatime;
+            pos_buffer[i].y += speed_buffer[i] * deltatime;
             life_buffer[i] -= dt;
         }
     }

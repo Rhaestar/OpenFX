@@ -19,6 +19,7 @@ public:
         pid = make_program(vertex, fragment);
         pos_buffer = new glm::vec3[nparticles];
         life_buffer = new GLuint[nparticles];
+        speed_buffer = new float[nparticles];
         timer = 100;
         wave_size = 2;
     }
@@ -27,6 +28,7 @@ public:
     {
         delete []pos_buffer;
         delete []life_buffer;
+        delete []speed_buffer;
     }
 
     void init_emitter_vxo();
@@ -41,4 +43,5 @@ public:
     GLuint vbo_id;
     glm::vec3* pos_buffer;
     GLuint *life_buffer;
+    float* speed_buffer;
 };

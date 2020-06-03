@@ -87,7 +87,7 @@ int main(int argc, char* argv[])
     init_GL();
     std::string vertex_src = load("shaders/vertex.shd");
     std::string fragment_src = load("shaders/fragment.shd");
-    Emitter e(120, vertex_src, fragment_src);
+    Emitter e(100, vertex_src, fragment_src);
     e.init_emitter_vxo();
     vfx = &e;
     glutMainLoop();
