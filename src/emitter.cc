@@ -47,6 +47,8 @@ void Emitter::update_vbo(unsigned dt)
             pos_buffer[i].z = 0.25f - random_range(0.5f);
             life_buffer[i] = 1000.f + 500.f - random_range(1000.f);
             speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
+            n_frames_dir[i] = 0;
+            dir[i] = rand() % 2;
         }
     }
 
@@ -59,9 +61,17 @@ void Emitter::update_vbo(unsigned dt)
             pos_buffer[i].z = 0.25f - random_range(0.5f);
             life_buffer[i] = 1000.f + 500.f - random_range(1000.f);
             speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
+            n_frames_dir[i] = 0;
+            dir[i] = rand() % 2;
         }
         else
         {
+            if (++n_frames_dir[i] > rand() % 50 + 10) {
+                dir[i] = (dir[i] + 1) % 2;
+                n_frames_dir[i] = 0;
+            }
+
+            pos_buffer[i].x += (dir[i] == 0 ? -1 : 1) * random_range(0.4f) * deltatime;
             pos_buffer[i].x += random_range(0.5f) * deltatime * pos_buffer[i].y;
             pos_buffer[i].x -= random_range(0.5f) * deltatime * pos_buffer[i].y;
             pos_buffer[i].y += speed_buffer[i] * deltatime;

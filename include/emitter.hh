@@ -20,6 +20,8 @@ public:
         pos_buffer = new glm::vec3[nparticles];
         life_buffer = new GLuint[nparticles];
         speed_buffer = new float[nparticles];
+        n_frames_dir = new int[nparticles];
+        dir = new int[nparticles];
         timer = 100;
         wave_size = 2;
     }
@@ -29,6 +31,8 @@ public:
         delete []pos_buffer;
         delete []life_buffer;
         delete []speed_buffer;
+        delete []n_frames_dir;
+        delete []dir;
     }
 
     void init_emitter_vxo();
@@ -44,4 +48,6 @@ public:
     glm::vec3* pos_buffer;
     GLuint *life_buffer;
     float* speed_buffer;
+    int* n_frames_dir;
+    int* dir; //0: right, 1: left
 };
