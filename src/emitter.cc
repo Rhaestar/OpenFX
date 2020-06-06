@@ -72,8 +72,7 @@ void Emitter::update_vbo(unsigned dt)
             }
 
             pos_buffer[i].x += (dir[i] == 0 ? -1 : 1) * random_range(0.4f) * deltatime;
-            pos_buffer[i].x += random_range(0.5f) * deltatime * pos_buffer[i].y;
-            pos_buffer[i].x -= random_range(0.5f) * deltatime * pos_buffer[i].y;
+            pos_buffer[i].z += (dir[i] == 0 ? -1 : 1) * random_range(0.4f) * deltatime;
             pos_buffer[i].y += speed_buffer[i] * deltatime;
             life_buffer[i] -= dt;
         }
