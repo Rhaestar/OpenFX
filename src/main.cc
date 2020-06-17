@@ -1,10 +1,13 @@
 #include "program.hh"
 #include "emitter.hh"
+#include "bubbleEmitter.hh"
+#include "smokeEmitter.hh"
 #include <iostream>
 #include <cmath>
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <cstring>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -85,10 +88,18 @@ int main(int argc, char* argv[])
     init_glut(argc, argv);
     init_glew();
     init_GL();
-    std::string vertex_src = load("shaders/vertex.shd");
-    std::string fragment_src = load("shaders/fragment.shd");
-    Emitter e(100, vertex_src, fragment_src);
-    e.init_emitter_vxo();
-    vfx = &e;
+    if (argc == 2 && strcmp(argv[1], "smoke") == 0)
+    {
+        std::string vertex_src = load("shaders/smokeVertex.shd");
+        std::string fragment_src = load("shaders/smokeFragment.shd");
+        vfx = new SmokeEmitter(10000, vertex_src, fragment_src);
+    }
+    else
+    {
+        std::string vertex_src = load("shaders/bubbleVertex.shd");
+        std::string fragment_src = load("shaders/bubbleFragment.shd");
+        vfx = new BubbleEmitter(100, vertex_src, fragment_src);
+    }
+    vfx->init_emitter_vxo();
     glutMainLoop();
 }
