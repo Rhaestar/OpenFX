@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
     {
         std::string vertex_src = load("shaders/smokeVertex.shd");
         std::string fragment_src = load("shaders/smokeFragment.shd");
-        vfx = new SmokeEmitter(10000, vertex_src, fragment_src);
+        vfx = new SmokeEmitter(200000, vertex_src, fragment_src);
     }
     else
     {

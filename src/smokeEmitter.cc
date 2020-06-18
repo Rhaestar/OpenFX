@@ -60,6 +60,7 @@ void SmokeEmitter::update_vbo(unsigned dt)
         }
     }
 
+
     for (GLuint i = 0; i < curr_nparticles; ++i)
     {
         if (dt > life_buffer[i])
@@ -84,9 +85,9 @@ void SmokeEmitter::update_vbo(unsigned dt)
             pos_buffer[i].y += speed_buffer[i] * deltatime;
             life_buffer[i] -= dt;
 
-            color_buffer[i].x = random_range(1.f);
-            color_buffer[i].y = random_range(1.f);
-            color_buffer[i].z = random_range(1.f);
+            color_buffer[i].x = color;
+            color_buffer[i].y = color;
+            color_buffer[i].z = color;
         }
     }
 
