@@ -1,9 +1,15 @@
 #include "smokeEmitter.hh"
 
+float SmokeEmitter::quadpos[12] = {1.f,  1.f,
+                                  -1.f,  1.f,
+                                   1.f, -1.f,
+                                   1.f, -1.f,
+                                  -1.f, -1.f,
+                                  -1.f,  1.f,};
+
 void SmokeEmitter::init_emitter_vxo()
 {
     int max_nb_vbo = 2;
-    int index_vbo = 0;
 
     GLint position_location = glGetAttribLocation(pid, "position");TEST_OPENGL_ERROR();
     GLint color_location = glGetAttribLocation(pid, "color");TEST_OPENGL_ERROR();
@@ -23,10 +29,73 @@ void SmokeEmitter::init_emitter_vxo()
     glBufferData(GL_ARRAY_BUFFER, nparticles *  sizeof(glm::vec3), color_buffer, GL_STATIC_DRAW);TEST_OPENGL_ERROR();
     glVertexAttribPointer(color_location, 3, GL_FLOAT, GL_FALSE, 0, 0); TEST_OPENGL_ERROR();
     glEnableVertexAttribArray(color_location); TEST_OPENGL_ERROR();
-
     glBindVertexArray(0); TEST_OPENGL_ERROR();
 
-    glUseProgram(pid);
+    //QUAD
+    glGenVertexArrays(1, &quad_vao_id); TEST_OPENGL_ERROR();
+    glBindVertexArray(quad_vao_id); TEST_OPENGL_ERROR();
+
+    glGenBuffers(1, &quad_vbo_id); TEST_OPENGL_ERROR();
+    glBindBuffer(GL_ARRAY_BUFFER, quad_vbo_id); TEST_OPENGL_ERROR();
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadpos), quadpos, GL_STATIC_DRAW); TEST_OPENGL_ERROR();
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0); TEST_OPENGL_ERROR();
+    glEnableVertexAttribArray(0); TEST_OPENGL_ERROR();
+    glBindVertexArray(0); TEST_OPENGL_ERROR();
+
+    init_fbo();
+
+}
+
+void SmokeEmitter::init_fbo()
+{
+    glGenTextures(1, &texture_id);  TEST_OPENGL_ERROR();
+    glBindTexture(GL_TEXTURE_2D, texture_id); TEST_OPENGL_ERROR();
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL); TEST_OPENGL_ERROR();
+    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR ); TEST_OPENGL_ERROR();
+    glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ); TEST_OPENGL_ERROR();
+    glObjectLabel(GL_TEXTURE, texture_id, -1, "Example Texture");
+    glUseProgram(texture_pid);
+    glBindTexture(GL_TEXTURE_2D, 0); TEST_OPENGL_ERROR();
+
+    glGenFramebuffers(1, &fbo_id); TEST_OPENGL_ERROR();
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_id); TEST_OPENGL_ERROR();
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture_id, 0); TEST_OPENGL_ERROR();
+    glDrawBuffer(GL_COLOR_ATTACHMENT0); TEST_OPENGL_ERROR();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); TEST_OPENGL_ERROR();
+
+}
+
+void SmokeEmitter::render()
+{
+    //Draw into texture
+    glUseProgram(pid); TEST_OPENGL_ERROR();
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_id); TEST_OPENGL_ERROR();
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBindVertexArray(vao_id); TEST_OPENGL_ERROR();
+    glDrawArrays(GL_POINTS, 0, curr_nparticles); TEST_OPENGL_ERROR();
+    glBindVertexArray(0); TEST_OPENGL_ERROR();
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo_id); TEST_OPENGL_ERROR();
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); TEST_OPENGL_ERROR();
+
+    //glClearColor(0.4f, 0.4f, 0.4f, 1.f);
+//    glBlitFramebuffer(0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 0, 0, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT),GL_COLOR_BUFFER_BIT,GL_NEAREST);
+
+
+    glUseProgram(texture_pid); TEST_OPENGL_ERROR();
+    glActiveTexture(GL_TEXTURE0); TEST_OPENGL_ERROR();
+    glBindTexture(GL_TEXTURE_2D, texture_id); TEST_OPENGL_ERROR();
+    GLint texID = glGetUniformLocation(texture_pid , "renderedTexture" ); TEST_OPENGL_ERROR();
+    glUniform1i(texID, 0); TEST_OPENGL_ERROR();
+    //glGenerateMipmap(GL_TEXTURE_2D); TEST_OPENGL_ERROR();
+
+    //Draw texture
+
+    glBindVertexArray(quad_vao_id); TEST_OPENGL_ERROR();
+    glDrawArrays(GL_TRIANGLES, 0, 6); TEST_OPENGL_ERROR();
+    glBindVertexArray(0); TEST_OPENGL_ERROR();
 }
 
 void SmokeEmitter::update_vbo(unsigned dt)
@@ -57,6 +126,9 @@ void SmokeEmitter::update_vbo(unsigned dt)
             speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
+            color_buffer[i].x = 0.f;
+            color_buffer[i].y = 0.f;
+            color_buffer[i].z = 0.f;
         }
     }
 
@@ -72,6 +144,9 @@ void SmokeEmitter::update_vbo(unsigned dt)
             speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
+            color_buffer[i].x = 0.f;
+            color_buffer[i].y = 0.f;
+            color_buffer[i].z = 0.f;
         }
         else
         {
@@ -84,6 +159,9 @@ void SmokeEmitter::update_vbo(unsigned dt)
             pos_buffer[i].z += (dir[i] == 0 ? -1 : 1) * random_range(0.4f) * deltatime;
             pos_buffer[i].y += speed_buffer[i] * deltatime;
             life_buffer[i] -= dt;
+
+            float dist = pos_buffer[i].y;
+            float color = glm::mix(0.5f, 1.f, dist) + random_range(-0.01f, 0.01f);
 
             color_buffer[i].x = color;
             color_buffer[i].y = color;

@@ -21,9 +21,7 @@ void window_resize(int width, int height) {
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);TEST_OPENGL_ERROR();
-    glBindVertexArray(1);TEST_OPENGL_ERROR();
-    glDrawArrays(GL_POINTS, 0, vfx->curr_nparticles);TEST_OPENGL_ERROR();
-    glBindVertexArray(0);TEST_OPENGL_ERROR();
+    vfx->render();
     glutSwapBuffers();
 }
 
@@ -92,7 +90,10 @@ int main(int argc, char* argv[])
     {
         std::string vertex_src = load("shaders/smokeVertex.shd");
         std::string fragment_src = load("shaders/smokeFragment.shd");
-        vfx = new SmokeEmitter(200000, vertex_src, fragment_src);
+        std::string bvertex_src = load("shaders/blurVertex.shd");
+        std::string bfragment_src = load("shaders/blurFragment.shd");
+        vfx = new SmokeEmitter(200000, vertex_src, fragment_src,
+                    bvertex_src, bfragment_src);
     }
     else
     {
@@ -100,6 +101,7 @@ int main(int argc, char* argv[])
         std::string fragment_src = load("shaders/bubbleFragment.shd");
         vfx = new BubbleEmitter(100, vertex_src, fragment_src);
     }
+    std::cout << glutGet(GLUT_WINDOW_WIDTH) << " " << glutGet(GLUT_WINDOW_HEIGHT) << "\n";
     vfx->init_emitter_vxo();
     glutMainLoop();
 }

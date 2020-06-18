@@ -21,6 +21,7 @@ public:
 
     virtual void init_emitter_vxo() = 0;
     virtual void update_vbo(unsigned dt) = 0;
+    virtual void render() = 0;
 
     GLuint nparticles;
     GLuint curr_nparticles;

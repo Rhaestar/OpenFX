@@ -13,7 +13,14 @@ void BubbleEmitter::init_emitter_vxo()
 
     glBindVertexArray(0); TEST_OPENGL_ERROR();
 
-    glUseProgram(pid);
+}
+
+void BubbleEmitter::render()
+{
+    glUseProgram(pid); TEST_OPENGL_ERROR();
+    glBindVertexArray(vao_id); TEST_OPENGL_ERROR();
+    glDrawArrays(GL_POINTS, 0, curr_nparticles); TEST_OPENGL_ERROR();
+    glBindVertexArray(0); TEST_OPENGL_ERROR();
 }
 
 void BubbleEmitter::update_vbo(unsigned dt)

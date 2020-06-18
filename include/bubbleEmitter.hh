@@ -35,6 +35,7 @@ public:
 
     void init_emitter_vxo() override;
     void update_vbo(unsigned dt) override;
+    void render() override;
     
     GLuint timer;
     GLuint wave_size;
