@@ -24,7 +24,7 @@ public:
         n_frames_dir = new int[nparticles];
         dir = new int[nparticles];
         timer = 100;
-        wave_size = 2000;
+        wave_size = 10;
     }
 
     ~SmokeEmitter()

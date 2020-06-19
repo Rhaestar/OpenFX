@@ -4,11 +4,41 @@ layout (location=0) out vec4 output_color;
 
 in vec2 UV;
 uniform sampler2D renderedTexture;
+uniform int width;
+uniform int height;
+
+const float kernel[11] = { 0.090154, 0.090606, 0.090959, 0.091212, 0.091364, 0.091414, 0.091364, 0.091212, 0.090959, 0.090606, 0.090154 };
+const float offset[11] = {-5., -4., -3., -2., -1., 0., 1., 2., 3., 4., 5. };
 
 void main()
 {
-//        output_color = vec4(1.f, 0.f, 0.f, 1.f);
-    output_color = vec4(texture(renderedTexture, UV).rgb, 1.);
+    vec4 color2 = texture(renderedTexture, UV);
+    vec4 color = vec4(0., 0., 0., 0.);
+    
+    for (int i = 0; i < 11; ++i)
+    {
+        vec2 temp = vec2(UV.x + offset[i] * (5. / width), UV.y);
+        if (temp.x < 0.f || temp.x >= 1.f)
+            color += kernel[i] * texture(renderedTexture, UV);
+        else
+            color += kernel[i] * texture(renderedTexture, temp);
+    }
 
+    color2 = vec4(0., 0., 0., 0.);
 
+    for (int i = 0; i < 11; ++i)
+    {
+        if (i == 5)
+            color2 += kernel[i] * color;
+        else
+        {
+            vec2 temp = vec2(UV.x, UV.y + offset[i] * (5. / height));
+            if (temp.y < 0.f || temp.y >= 1.f)
+                color2 += kernel[i] * texture(renderedTexture, UV);
+            else
+                color2 += kernel[i] * texture(renderedTexture, temp);
+        }
+    }
+
+    output_color = vec4(color2);
 }

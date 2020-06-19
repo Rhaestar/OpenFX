@@ -65,6 +65,12 @@ void SmokeEmitter::init_fbo()
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0); TEST_OPENGL_ERROR();
 
+    GLint texID = glGetUniformLocation(texture_pid , "renderedTexture" ); TEST_OPENGL_ERROR();
+    glUniform1i(texID, 0); TEST_OPENGL_ERROR();
+    GLint wID = glGetUniformLocation(texture_pid , "width" ); TEST_OPENGL_ERROR();
+    glUniform1i(wID, glutGet(GLUT_WINDOW_WIDTH)); TEST_OPENGL_ERROR();
+    GLint hID = glGetUniformLocation(texture_pid , "height" ); TEST_OPENGL_ERROR();
+    glUniform1i(hID, glutGet(GLUT_WINDOW_HEIGHT)); TEST_OPENGL_ERROR();
 }
 
 void SmokeEmitter::render()
@@ -87,8 +93,6 @@ void SmokeEmitter::render()
     glUseProgram(texture_pid); TEST_OPENGL_ERROR();
     glActiveTexture(GL_TEXTURE0); TEST_OPENGL_ERROR();
     glBindTexture(GL_TEXTURE_2D, texture_id); TEST_OPENGL_ERROR();
-    GLint texID = glGetUniformLocation(texture_pid , "renderedTexture" ); TEST_OPENGL_ERROR();
-    glUniform1i(texID, 0); TEST_OPENGL_ERROR();
     //glGenerateMipmap(GL_TEXTURE_2D); TEST_OPENGL_ERROR();
 
     //Draw texture
@@ -98,6 +102,7 @@ void SmokeEmitter::render()
     glBindVertexArray(0); TEST_OPENGL_ERROR();
 }
 
+float color = 0.5f;
 void SmokeEmitter::update_vbo(unsigned dt)
 {
     bool need_init = false;
@@ -117,6 +122,7 @@ void SmokeEmitter::update_vbo(unsigned dt)
 
     if (need_init)
     {
+#pragma omp parallel for
         for (GLuint i = curr_nparticles - wave_size; i < curr_nparticles; ++i)
         {
             pos_buffer[i].x = 0.25f - random_range(0.5f);
@@ -126,13 +132,13 @@ void SmokeEmitter::update_vbo(unsigned dt)
             speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
-            color_buffer[i].x = 0.f;
-            color_buffer[i].y = 0.f;
-            color_buffer[i].z = 0.f;
+            color_buffer[i].x = color;
+            color_buffer[i].y = color;
+            color_buffer[i].z = color;
         }
     }
 
-
+#pragma omp parallel for
     for (GLuint i = 0; i < curr_nparticles; ++i)
     {
         if (dt > life_buffer[i])
@@ -144,9 +150,9 @@ void SmokeEmitter::update_vbo(unsigned dt)
             speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
-            color_buffer[i].x = 0.f;
-            color_buffer[i].y = 0.f;
-            color_buffer[i].z = 0.f;
+            color_buffer[i].x = color;
+            color_buffer[i].y = color;
+            color_buffer[i].z = color;
         }
         else
         {
@@ -161,7 +167,6 @@ void SmokeEmitter::update_vbo(unsigned dt)
             life_buffer[i] -= dt;
 
             float dist = pos_buffer[i].y;
-            float color = glm::mix(0.5f, 1.f, dist) + random_range(-0.01f, 0.01f);
 
             color_buffer[i].x = color;
             color_buffer[i].y = color;

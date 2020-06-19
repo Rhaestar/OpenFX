@@ -13,7 +13,7 @@ CPP_FILES = src/emitter.cc src/bubbleEmitter.cc src/program.cc src/main.cc \
 HXX_FILES =
 OBJ_FILES = $(CPP_FILES:.cc=.o)
 
-CXX_FLAGS = -Wall -Wextra -Ofast -g -std=c++11 -I include/
+CXX_FLAGS = -Wall -Wextra -Ofast -g -std=c++11 -I include/ -fopenmp
 CXX_FLAGS +=
 CXX_FLAGS += -m64 -march=native
 CXX_FLAGS += -fopt-info-vec-optimized #-fopt-info-vec-missed -ftree-vectorize
