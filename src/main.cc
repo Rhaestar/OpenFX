@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
     {
         std::string vertex_src = load("shaders/bubbleVertex.shd");
         std::string fragment_src = load("shaders/bubbleFragment.shd");
-        vfx = new BubbleEmitter(100, vertex_src, fragment_src);
+        vfx = new BubbleEmitter(60, vertex_src, fragment_src);
     }
     std::cout << glutGet(GLUT_WINDOW_WIDTH) << " " << glutGet(GLUT_WINDOW_HEIGHT) << "\n";
     vfx->init_emitter_vxo();

@@ -20,8 +20,9 @@ public:
         speed_buffer = new float[nparticles];
         n_frames_dir = new int[nparticles];
         dir = new int[nparticles];
+        size = new float[nparticles];
         timer = 100;
-        wave_size = 2;
+        wave_size = 1;
     }
 
     ~BubbleEmitter()
@@ -31,6 +32,7 @@ public:
         delete []speed_buffer;
         delete []n_frames_dir;
         delete []dir;
+        delete []size;
     }
 
     void init_emitter_vxo() override;
@@ -39,10 +41,11 @@ public:
     
     GLuint timer;
     GLuint wave_size;
-    GLuint vbo_id;
+    GLuint vbo_id[2];
     glm::vec3* pos_buffer;
     GLuint *life_buffer;
     float* speed_buffer;
     int* n_frames_dir;
     int* dir; //0: right, 1: left
+    float* size;
 };

@@ -2,14 +2,26 @@
 
 void BubbleEmitter::init_emitter_vxo()
 {
+    int max_nb_vbo = 2;
+    
+    GLint position_location = glGetAttribLocation(pid, "position");TEST_OPENGL_ERROR();
+    GLint size_location = glGetAttribLocation(pid, "size");TEST_OPENGL_ERROR();
+
     glGenVertexArrays(1, &vao_id); TEST_OPENGL_ERROR();
     glBindVertexArray(vao_id); TEST_OPENGL_ERROR();
 
-    glGenBuffers(1, &vbo_id); TEST_OPENGL_ERROR();
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_id); TEST_OPENGL_ERROR();
+    glGenBuffers(max_nb_vbo, vbo_id); TEST_OPENGL_ERROR();
+    //POSITION
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_id[0]); TEST_OPENGL_ERROR();
     glBufferData(GL_ARRAY_BUFFER, nparticles *  sizeof(glm::vec3), pos_buffer, GL_STATIC_DRAW);TEST_OPENGL_ERROR();
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); TEST_OPENGL_ERROR();
-    glEnableVertexAttribArray(0); TEST_OPENGL_ERROR();
+    glVertexAttribPointer(position_location, 3, GL_FLOAT, GL_FALSE, 0, 0); TEST_OPENGL_ERROR();
+    glEnableVertexAttribArray(position_location); TEST_OPENGL_ERROR();
+
+    //SIZE
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_id[1]); TEST_OPENGL_ERROR();
+    glBufferData(GL_ARRAY_BUFFER, nparticles *  sizeof(float), size, GL_STATIC_DRAW);TEST_OPENGL_ERROR();
+    glVertexAttribPointer(size_location, 1, GL_FLOAT, GL_FALSE, 0, 0); TEST_OPENGL_ERROR();
+    glEnableVertexAttribArray(size_location); TEST_OPENGL_ERROR();
 
     glBindVertexArray(0); TEST_OPENGL_ERROR();
 
@@ -51,6 +63,7 @@ void BubbleEmitter::update_vbo(unsigned dt)
             speed_buffer[i] = random_range(0.25f, 0.75f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
+            size[i] = random_range(16, 48);
         }
     }
 
@@ -65,6 +78,7 @@ void BubbleEmitter::update_vbo(unsigned dt)
             speed_buffer[i] = random_range(0.25f, 0.75f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
+            size[i] = random_range(16, 48);
         }
         else
         {
@@ -81,7 +95,14 @@ void BubbleEmitter::update_vbo(unsigned dt)
     }
 
     glBindVertexArray(vao_id); TEST_OPENGL_ERROR();
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_id); TEST_OPENGL_ERROR();
-    glBufferSubData(GL_ARRAY_BUFFER, 0, curr_nparticles * sizeof(glm::vec3), pos_buffer);
+
+    //POSITION
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_id[0]); TEST_OPENGL_ERROR();
+    glBufferSubData(GL_ARRAY_BUFFER, 0, curr_nparticles * sizeof(glm::vec3), pos_buffer); TEST_OPENGL_ERROR();
+
+    //SIZE
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_id[1]); TEST_OPENGL_ERROR();
+    glBufferSubData(GL_ARRAY_BUFFER, 0, curr_nparticles * sizeof(float), size); TEST_OPENGL_ERROR();
+
     glBindVertexArray(0); TEST_OPENGL_ERROR();
 }

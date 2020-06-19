@@ -1,9 +1,10 @@
 #version 450
 
 in vec3 position;
+in float size;
 
 void main() {
     vec4 position4 = vec4(position.xyz, 1.);
     gl_Position = position4;
-    gl_PointSize = 64.0;
+    gl_PointSize = size;
 }
