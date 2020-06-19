@@ -125,16 +125,16 @@ void SmokeEmitter::update_vbo(unsigned dt)
 #pragma omp parallel for
         for (GLuint i = curr_nparticles - wave_size; i < curr_nparticles; ++i)
         {
-            pos_buffer[i].x = 0.25f - random_range(0.5f);
+            pos_buffer[i].x = random_range(-0.25f, 0.25f);
             pos_buffer[i].y = 0.f;
-            pos_buffer[i].z = 0.25f - random_range(0.5f);
-            life_buffer[i] = 1000.f + 500.f - random_range(1000.f);
-            speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
+            pos_buffer[i].z = random_range(-0.25f, 0.25f);
+            life_buffer[i] = random_range(500.f, 1500.f);
+            speed_buffer[i] = random_range(0.25f, 0.75f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
-            color_buffer[i].x = color;
-            color_buffer[i].y = color;
-            color_buffer[i].z = color;
+            color_buffer[i].r = color;
+            color_buffer[i].g = color;
+            color_buffer[i].b = color;
         }
     }
 
@@ -143,16 +143,16 @@ void SmokeEmitter::update_vbo(unsigned dt)
     {
         if (dt > life_buffer[i])
         {
-            pos_buffer[i].x = 0.25f - random_range(0.5f);
+            pos_buffer[i].x = random_range(-0.25f, 0.25f);
             pos_buffer[i].y = 0.f;
-            pos_buffer[i].z = 0.25f - random_range(0.5f);
-            life_buffer[i] = 1000.f + 500.f - random_range(1000.f);
-            speed_buffer[i] = 0.5f + 0.25f - random_range(0.5f);
+            pos_buffer[i].z = random_range(-0.25f, 0.25f);
+            life_buffer[i] = random_range(500.f, 1500.f);
+            speed_buffer[i] = random_range(0.25f, 0.75f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
-            color_buffer[i].x = color;
-            color_buffer[i].y = color;
-            color_buffer[i].z = color;
+            color_buffer[i].r = color;
+            color_buffer[i].g = color;
+            color_buffer[i].b = color;
         }
         else
         {
@@ -168,9 +168,9 @@ void SmokeEmitter::update_vbo(unsigned dt)
 
             float dist = pos_buffer[i].y;
 
-            color_buffer[i].x = color;
-            color_buffer[i].y = color;
-            color_buffer[i].z = color;
+            color_buffer[i].r = color;
+            color_buffer[i].g = color;
+            color_buffer[i].b = color;
         }
     }
 
