@@ -127,12 +127,12 @@ void SmokeEmitter::update_vbo(unsigned dt)
             pos_buffer[i].x = random_range(-0.25f, 0.25f);
             pos_buffer[i].y = 0.f;
             pos_buffer[i].z = random_range(-0.25f, 0.25f);
-            life_buffer[i] = random_range(500.f, 1500.f);
-            speed_buffer[i] = random_range(0.25f, 0.75f);
+            life_buffer[i] = random_range(850.f, 1100.f);
+            speed_buffer[i] = random_range(0.25f, 0.45f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
 
-            float color = glm::mix(0.3f, 0.7f, 1.f - life_buffer[i] / 1250.f);
+            float color = glm::mix(0.2f, 0.7f, 1.f - life_buffer[i] / 1250.f);
             color_buffer[i].r = color;
             color_buffer[i].g = color;
             color_buffer[i].b = color;
@@ -151,7 +151,7 @@ void SmokeEmitter::update_vbo(unsigned dt)
             speed_buffer[i] = random_range(0.25f, 0.75f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
-            float color = glm::mix(0.3f, 0.7f, 1.f - life_buffer[i] / 1250.f);
+            float color = glm::mix(0.2f, 0.7f, 1.f - life_buffer[i] / 1250.f);
             color_buffer[i].r = color;
             color_buffer[i].g = color;
             color_buffer[i].b = color;
@@ -170,7 +170,7 @@ void SmokeEmitter::update_vbo(unsigned dt)
 
             float dist = pos_buffer[i].y;
 
-            float color = glm::mix(0.3f, 0.7f, 1.f - life_buffer[i] / 1250.f);
+            float color = glm::mix(0.2f, 0.7f, 1.f - life_buffer[i] / 1250.f);
             color_buffer[i].r = color;
             color_buffer[i].g = color;
             color_buffer[i].b = color;

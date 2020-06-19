@@ -9,7 +9,7 @@ uniform int height;
 
 
 const int kernel_size = 11;
-const float blur_ratio = 10;
+const float blur_ratio = 7;
 const float kernel[kernel_size] = { 0.090154, 0.090606, 0.090959, 0.091212, 0.091364, 0.091414, 0.091364, 0.091212, 0.090959, 0.090606, 0.090154 };
 const float offset[kernel_size] = {-5., -4., -3., -2., -1., 0., 1., 2., 3., 4., 5. };
 
