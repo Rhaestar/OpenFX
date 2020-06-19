@@ -7,17 +7,20 @@ uniform sampler2D renderedTexture;
 uniform int width;
 uniform int height;
 
-const float kernel[11] = { 0.090154, 0.090606, 0.090959, 0.091212, 0.091364, 0.091414, 0.091364, 0.091212, 0.090959, 0.090606, 0.090154 };
-const float offset[11] = {-5., -4., -3., -2., -1., 0., 1., 2., 3., 4., 5. };
+
+const int kernel_size = 11;
+const float blur_ratio = 7;
+const float kernel[kernel_size] = { 0.090154, 0.090606, 0.090959, 0.091212, 0.091364, 0.091414, 0.091364, 0.091212, 0.090959, 0.090606, 0.090154 };
+const float offset[kernel_size] = {-5., -4., -3., -2., -1., 0., 1., 2., 3., 4., 5. };
 
 void main()
 {
     vec4 color2 = texture(renderedTexture, UV);
     vec4 color = vec4(0., 0., 0., 0.);
     
-    for (int i = 0; i < 11; ++i)
+    for (int i = 0; i < kernel_size; ++i)
     {
-        vec2 temp = vec2(UV.x + offset[i] * (5. / width), UV.y);
+        vec2 temp = vec2(UV.x + offset[i] * (blur_ratio / width), UV.y);
         if (temp.x < 0.f || temp.x >= 1.f)
             color += kernel[i] * texture(renderedTexture, UV);
         else
@@ -26,13 +29,13 @@ void main()
 
     color2 = vec4(0., 0., 0., 0.);
 
-    for (int i = 0; i < 11; ++i)
+    for (int i = 0; i < kernel_size; ++i)
     {
         if (i == 5)
             color2 += kernel[i] * color;
         else
         {
-            vec2 temp = vec2(UV.x, UV.y + offset[i] * (5. / height));
+            vec2 temp = vec2(UV.x, UV.y + offset[i] * (blur_ratio / height));
             if (temp.y < 0.f || temp.y >= 1.f)
                 color2 += kernel[i] * texture(renderedTexture, UV);
             else

@@ -8,6 +8,6 @@ out vec3 vertex_color;
 void main() {
     vec4 position4 = vec4(position.xyz, 1.);
     gl_Position = position4;
-    gl_PointSize = 64.0;
+    gl_PointSize = 96.0;
     vertex_color = color;
 }
