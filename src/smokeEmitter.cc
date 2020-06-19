@@ -168,6 +168,7 @@ void SmokeEmitter::update_vbo(unsigned dt)
 
             float dist = pos_buffer[i].y;
 
+            color = glm::mix(0.2f, 0.7f, 1.f - life_buffer[i] / 1500.f);
             color_buffer[i].r = color;
             color_buffer[i].g = color;
             color_buffer[i].b = color;
