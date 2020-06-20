@@ -2,6 +2,7 @@
 #include "emitter.hh"
 #include "bubbleEmitter.hh"
 #include "smokeEmitter.hh"
+#include "fireEmitter.hh"
 #include <iostream>
 #include <cmath>
 #include <fstream>
@@ -93,6 +94,15 @@ int main(int argc, char* argv[])
         std::string bvertex_src = load("shaders/blurVertex.shd");
         std::string bfragment_src = load("shaders/blurFragment.shd");
         vfx = new SmokeEmitter(2000, vertex_src, fragment_src,
+                    bvertex_src, bfragment_src);
+    }
+    else if (argc == 2 && strcmp(argv[1], "fire") == 0)
+    {
+        std::string vertex_src = load("shaders/fireVertex.shd");
+        std::string fragment_src = load("shaders/fireFragment.shd");
+        std::string bvertex_src = load("shaders/blurVertex.shd");
+        std::string bfragment_src = load("shaders/blurFragment.shd");
+        vfx = new FireEmitter(2000, vertex_src, fragment_src,
                     bvertex_src, bfragment_src);
     }
     else

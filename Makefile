@@ -9,7 +9,7 @@
 CC = g++
 
 CPP_FILES = src/emitter.cc src/bubbleEmitter.cc src/program.cc src/main.cc \
-			src/smokeEmitter.cc
+			src/smokeEmitter.cc src/fireEmitter.cc
 HXX_FILES =
 OBJ_FILES = $(CPP_FILES:.cc=.o)
 

@@ -1,13 +1,13 @@
-#include "smokeEmitter.hh"
+#include "fireEmitter.hh"
 
-float SmokeEmitter::quadpos[12] = {1.f,  1.f,
+float FireEmitter::quadpos[12] = {1.f,  1.f,
                                   -1.f,  1.f,
                                    1.f, -1.f,
                                    1.f, -1.f,
                                   -1.f, -1.f,
                                   -1.f,  1.f,};
 
-void SmokeEmitter::init_emitter_vxo()
+void FireEmitter::init_emitter_vxo()
 {
     int max_nb_vbo = 2;
 
@@ -46,7 +46,7 @@ void SmokeEmitter::init_emitter_vxo()
 
 }
 
-void SmokeEmitter::init_fbo()
+void FireEmitter::init_fbo()
 {
     glGenTextures(1, &texture_id);  TEST_OPENGL_ERROR();
     glBindTexture(GL_TEXTURE_2D, texture_id); TEST_OPENGL_ERROR();
@@ -73,7 +73,7 @@ void SmokeEmitter::init_fbo()
     glUniform1i(hID, glutGet(GLUT_WINDOW_HEIGHT)); TEST_OPENGL_ERROR();
 }
 
-void SmokeEmitter::render()
+void FireEmitter::render()
 {
     //Draw into texture
     glUseProgram(pid); TEST_OPENGL_ERROR();
@@ -102,7 +102,7 @@ void SmokeEmitter::render()
     glBindVertexArray(0); TEST_OPENGL_ERROR();
 }
 
-void SmokeEmitter::update_vbo(unsigned dt)
+void FireEmitter::update_vbo(unsigned dt)
 {
     bool need_init = false;
     if (nparticles > curr_nparticles)
@@ -132,10 +132,9 @@ void SmokeEmitter::update_vbo(unsigned dt)
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
 
-            float color = glm::mix(0.2f, 0.7f, 1.f - life_buffer[i] / 1250.f);
-            color_buffer[i].r = color;
-            color_buffer[i].g = color;
-            color_buffer[i].b = color;
+            color_buffer[i].r = 1.f;
+            color_buffer[i].g = 1.f;
+            color_buffer[i].b = 1.f;
         }
     }
 
@@ -151,10 +150,10 @@ void SmokeEmitter::update_vbo(unsigned dt)
             speed_buffer[i] = random_range(0.45f, 0.75f);
             n_frames_dir[i] = 0;
             dir[i] = rand() % 2;
-            float color = glm::mix(0.2f, 0.7f, 1.f - life_buffer[i] / 1250.f);
-            color_buffer[i].r = color;
-            color_buffer[i].g = color;
-            color_buffer[i].b = color;
+            
+            color_buffer[i].r = 1.f;
+            color_buffer[i].g = 1.f;
+            color_buffer[i].b = 1.f;
         }
         else
         {
@@ -168,10 +167,10 @@ void SmokeEmitter::update_vbo(unsigned dt)
             pos_buffer[i].y += speed_buffer[i] * deltatime;
             life_buffer[i] -= dt;
 
-            float color = glm::mix(0.2f, 0.7f, 1.f - life_buffer[i] / 1250.f);
-            color_buffer[i].r = color;
-            color_buffer[i].g = color;
-            color_buffer[i].b = color;
+            float life = life_buffer[i];
+            color_buffer[i].r -= (life > 200.f || life == 0) ? 0.f : 0.07f;
+            color_buffer[i].g -= (life > 500.f || life == 0) ? 0.f : 0.05f;
+            color_buffer[i].b -= (life > 900.f || life == 0) ? 0.f : 0.05f;
         }
     }
 
