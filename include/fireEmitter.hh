@@ -24,7 +24,7 @@ public:
         n_frames_dir = new int[nparticles];
         dir = new int[nparticles];
         timer = 100;
-        wave_size = 20;
+        wave_size = 15;
     }
 
     ~FireEmitter()

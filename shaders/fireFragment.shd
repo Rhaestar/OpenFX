@@ -10,5 +10,5 @@ void main()
     float f = dot(temp, temp);
     if (f > 0.25)
         discard;
-    output_color = vec4(vertex_color, 0.5f);
+    output_color = vec4(vertex_color, 0.75f);
 }

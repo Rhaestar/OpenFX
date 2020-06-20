@@ -168,9 +168,10 @@ void FireEmitter::update_vbo(unsigned dt)
             life_buffer[i] -= dt;
 
             float life = life_buffer[i];
-            color_buffer[i].r -= (life > 200.f || life == 0) ? 0.f : 0.07f;
-            color_buffer[i].g -= (life > 500.f || life == 0) ? 0.f : 0.05f;
-            color_buffer[i].b -= (life > 900.f || life == 0) ? 0.f : 0.05f;
+            color_buffer[i].r -= (life > 100.f || life == 0) ? 0.f : 0.07f;
+            color_buffer[i].g -= (life > 400.f || life == 0) ? 0.f : 0.07f;
+            color_buffer[i].b -= (life > 800.f || life == 0) ? 0.f : 0.07f;
+            color_buffer[i] = glm::clamp(color_buffer[i], 0.f , 1.f);
         }
     }
 
